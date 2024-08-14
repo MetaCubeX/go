@@ -465,6 +465,28 @@ func initLongPathSupport() {
 	canUseLongPaths = true
 }
 
+var osVersionInfo struct {
+	majorVersion uint32
+	minorVersion uint32
+	buildNumber  uint32
+}
+
+func initOsVersionInfo() {
+	info := windows.OSVERSIONINFOW{}
+	info.OSVersionInfoSize = uint32(unsafe.Sizeof(info))
+	stdcall(_RtlGetVersion, uintptr(unsafe.Pointer(&info)))
+	osVersionInfo.majorVersion = info.MajorVersion
+	osVersionInfo.minorVersion = info.MinorVersion
+	osVersionInfo.buildNumber = info.BuildNumber
+}
+
+//go:linkname rtlGetNtVersionNumbers syscall.rtlGetNtVersionNumbers
+func rtlGetNtVersionNumbers(majorVersion *uint32, minorVersion *uint32, buildNumber *uint32) {
+	*majorVersion = osVersionInfo.majorVersion
+	*minorVersion = osVersionInfo.minorVersion
+	*buildNumber = osVersionInfo.buildNumber
+}
+
 func osinit() {
 	asmstdcallAddr = unsafe.Pointer(windows.AsmStdCallAddr())
 
@@ -479,6 +501,7 @@ func osinit() {
 
 	initSysDirectory()
 	initLongPathSupport()
+	initOsVersionInfo()
 
 	numCPUStartup = getCPUCount()
 
