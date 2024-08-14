@@ -119,14 +119,7 @@ func loadlibrary(filename *uint16) (uintptr, Errno) {
 }
 
 //go:linkname loadsystemlibrary
-func loadsystemlibrary(filename *uint16) (uintptr, Errno) {
-	const _LOAD_LIBRARY_SEARCH_SYSTEM32 = 0x00000800
-	handle, _, err := SyscallN(uintptr(__LoadLibraryExW), uintptr(unsafe.Pointer(filename)), 0, _LOAD_LIBRARY_SEARCH_SYSTEM32)
-	if handle != 0 {
-		err = 0
-	}
-	return handle, err
-}
+func loadsystemlibrary(filename *uint16, absoluteFilepath *uint16) (handle uintptr, err Errno)
 
 //go:linkname getprocaddress
 func getprocaddress(handle uintptr, procname *uint8) (uintptr, Errno) {
@@ -142,6 +135,9 @@ type DLL struct {
 	Name   string
 	Handle Handle
 }
+
+//go:linkname getSystemDirectory
+func getSystemDirectory() string // Implemented in runtime package.
 
 // LoadDLL loads the named DLL file into memory.
 //
@@ -159,7 +155,11 @@ func LoadDLL(name string) (*DLL, error) {
 	var h uintptr
 	var e Errno
 	if sysdll.IsSystemDLL[name] {
-		h, e = loadsystemlibrary(namep)
+		absoluteFilepathp, err := UTF16PtrFromString(getSystemDirectory() + name)
+		if err != nil {
+			return nil, err
+		}
+		h, e = loadsystemlibrary(namep, absoluteFilepathp)
 	} else {
 		h, e = loadlibrary(namep)
 	}
