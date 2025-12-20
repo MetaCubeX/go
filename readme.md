@@ -12,12 +12,16 @@ revert:
 * 7c1157f9544922e96945196b47b95664b1e39108: "net: remove sysSocket fallback for Windows 7"
 * 48042aa09c2f878c4faa576948b07fe625c4707a: "syscall: remove Windows 7 console handle workaround"
 * a17d959debdb04cd550016a3501dd09d50cd62e7: "runtime: always use LoadLibraryEx to load system libraries"
+
+sepical fix:
+- os.RemoveAll not working on Windows7
 ```shell
 cd $(go env GOROOT)
 curl https://github.com/MetaCubeX/go/commit/8cb5472d94c34b88733a81091bd328e70ee565a4.diff | patch --verbose -p 1
 curl https://github.com/MetaCubeX/go/commit/6788c4c6f9fafb56729bad6b660f7ee2272d699f.diff | patch --verbose -p 1
 curl https://github.com/MetaCubeX/go/commit/a5b2168bb836ed9d6601c626f95e56c07923f906.diff | patch --verbose -p 1
 curl https://github.com/MetaCubeX/go/commit/f56f1e23507e646c85243a71bde7b9629b2f970c.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/0a52622d2331ff975fb0442617ec19bc352bb2ed.diff | patch --verbose -p 1
 ```
 
 ## Revert Golang1.24 commit for Windows7/8
