@@ -1,5 +1,31 @@
 # MeteCubeX forked Go
 
+## Revert Golang1.26 commit for Windows7/8
+this patch file only works on golang1.26.x
+
+that means after golang1.27 release it must be changed
+
+see: https://github.com/MetaCubeX/go/commits/release-branch.go1.26/
+
+revert:
+* 693def151adff1af707d82d28f55dba81ceb08e1: "crypto/rand,runtime: switch RtlGenRandom for ProcessPrng"
+* 7c1157f9544922e96945196b47b95664b1e39108: "net: remove sysSocket fallback for Windows 7"
+* 48042aa09c2f878c4faa576948b07fe625c4707a: "syscall: remove Windows 7 console handle workaround"
+* a17d959debdb04cd550016a3501dd09d50cd62e7: "runtime: always use LoadLibraryEx to load system libraries"
+
+sepical fix:
+- os.RemoveAll not working on Windows7
+```shell
+cd $(go env GOROOT)
+curl https://github.com/MetaCubeX/go/commit/b0d48afabb9fd14976c27221cb525c5d2ebbfe79.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/44e76f7cf1bc6e04b5da724e0b2e48f393713506.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/b4aece36e51ecce81c3ee9fe03e31db552e90018.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/ea2726a6fa25fbfa1092e696e522eafca544d24c.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/d47e0d22130d597dcf9daa6b41fd9501274f0cb2.diff | patch --verbose -p 1
+```
+
+
+
 ## Revert Golang1.25 commit for Windows7/8
 this patch file only works on golang1.25.x
 
