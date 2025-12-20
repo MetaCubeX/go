@@ -192,30 +192,6 @@ func rootRemove(r *Root, name string) error {
 	return nil
 }
 
-func rootRemoveAll(r *Root, name string) error {
-	// Consistency with os.RemoveAll: Strip trailing /s from the name,
-	// so RemoveAll("not_a_directory/") succeeds.
-	for len(name) > 0 && IsPathSeparator(name[len(name)-1]) {
-		name = name[:len(name)-1]
-	}
-	if endsWithDot(name) {
-		// Consistency with os.RemoveAll: Return EINVAL when trying to remove .
-		return &PathError{Op: "RemoveAll", Path: name, Err: syscall.EINVAL}
-	}
-	if err := checkPathEscapesLstat(r, name); err != nil {
-		if err == syscall.ENOTDIR {
-			// Some intermediate path component is not a directory.
-			// RemoveAll treats this as success (since the target doesn't exist).
-			return nil
-		}
-		return &PathError{Op: "RemoveAll", Path: name, Err: err}
-	}
-	if err := RemoveAll(joinPath(r.root.name, name)); err != nil {
-		return &PathError{Op: "RemoveAll", Path: name, Err: underlyingError(err)}
-	}
-	return nil
-}
-
 func rootReadlink(r *Root, name string) (string, error) {
 	if err := checkPathEscapesLstat(r, name); err != nil {
 		return "", &PathError{Op: "readlinkat", Path: name, Err: err}
