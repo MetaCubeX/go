@@ -12,6 +12,7 @@ revert:
 * 7c1157f9544922e96945196b47b95664b1e39108: "net: remove sysSocket fallback for Windows 7"
 * 48042aa09c2f878c4faa576948b07fe625c4707a: "syscall: remove Windows 7 console handle workaround"
 * a17d959debdb04cd550016a3501dd09d50cd62e7: "runtime: always use LoadLibraryEx to load system libraries"
+* f0894a00f4b756d4b9b4078af2e686b359493583: "os: remove 5ms sleep on Windows in (*Process).Wait"
 
 sepical fix:
 - os.RemoveAll not working on Windows7
@@ -22,6 +23,7 @@ curl https://github.com/MetaCubeX/go/commit/44e76f7cf1bc6e04b5da724e0b2e48f39371
 curl https://github.com/MetaCubeX/go/commit/b4aece36e51ecce81c3ee9fe03e31db552e90018.diff | patch --verbose -p 1
 curl https://github.com/MetaCubeX/go/commit/ea2726a6fa25fbfa1092e696e522eafca544d24c.diff | patch --verbose -p 1
 curl https://github.com/MetaCubeX/go/commit/d47e0d22130d597dcf9daa6b41fd9501274f0cb2.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/00e8daec9a4d88f44a8dc55d3bdb71878e525b41.diff | patch --verbose -p 1
 ```
 
 
@@ -38,6 +40,7 @@ revert:
 * 7c1157f9544922e96945196b47b95664b1e39108: "net: remove sysSocket fallback for Windows 7"
 * 48042aa09c2f878c4faa576948b07fe625c4707a: "syscall: remove Windows 7 console handle workaround"
 * a17d959debdb04cd550016a3501dd09d50cd62e7: "runtime: always use LoadLibraryEx to load system libraries"
+* f0894a00f4b756d4b9b4078af2e686b359493583: "os: remove 5ms sleep on Windows in (*Process).Wait"
 
 sepical fix:
 - os.RemoveAll not working on Windows7
@@ -48,6 +51,7 @@ curl https://github.com/MetaCubeX/go/commit/6788c4c6f9fafb56729bad6b660f7ee2272d
 curl https://github.com/MetaCubeX/go/commit/a5b2168bb836ed9d6601c626f95e56c07923f906.diff | patch --verbose -p 1
 curl https://github.com/MetaCubeX/go/commit/f56f1e23507e646c85243a71bde7b9629b2f970c.diff | patch --verbose -p 1
 curl https://github.com/MetaCubeX/go/commit/0a52622d2331ff975fb0442617ec19bc352bb2ed.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/fb3d09a67fe97008ad76fea97ae88170072cbdbb.diff | patch --verbose -p 1
 ```
 
 ## Revert Golang1.24 commit for Windows7/8
