@@ -18,12 +18,12 @@ sepical fix:
 - os.RemoveAll not working on Windows7
 ```shell
 cd $(go env GOROOT)
-curl https://github.com/MetaCubeX/go/commit/b0d48afabb9fd14976c27221cb525c5d2ebbfe79.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/44e76f7cf1bc6e04b5da724e0b2e48f393713506.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/b4aece36e51ecce81c3ee9fe03e31db552e90018.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/ea2726a6fa25fbfa1092e696e522eafca544d24c.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/d47e0d22130d597dcf9daa6b41fd9501274f0cb2.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/00e8daec9a4d88f44a8dc55d3bdb71878e525b41.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/4e83a1914bf2009da8a1f74d3cdd75db812335d4.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/792f314df3838cc01f5934ff3f1b004160cffbb3.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/e794a4ccba66c41ee0cec6a193b57d11f87c4efb.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/bddb37c8868429bb2d8689dc12dd6f317792e8b8.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/bcf122131b9cd23bdc0599e15db2904050cfb5f1.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/030384681641464bf71ed16500075c458363510f.diff | patch --verbose -p 1
 ```
 
 
