@@ -18,12 +18,12 @@ sepical fix:
 - os.RemoveAll not working on Windows7
 ```shell
 cd $(go env GOROOT)
-curl https://github.com/MetaCubeX/go/commit/4e83a1914bf2009da8a1f74d3cdd75db812335d4.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/792f314df3838cc01f5934ff3f1b004160cffbb3.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/e794a4ccba66c41ee0cec6a193b57d11f87c4efb.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/bddb37c8868429bb2d8689dc12dd6f317792e8b8.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/bcf122131b9cd23bdc0599e15db2904050cfb5f1.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/030384681641464bf71ed16500075c458363510f.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/4b29590aa510e05686ea53de16e1e571d22203d8.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/2263b05b2fa6ce228fde1899587baf109f1e2e0a.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/ae41f7abdd5d7b8b51db2c03bf819ac66b8e1eb1.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/ce2e1a3d2c3c0d7277b4102841db1697147d2923.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/4ea1045cf3124221f055dbd2f3d2c9822934f661.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/8149d992682ce76c6af804b507878e19fc966f7b.diff | patch --verbose -p 1
 ```
 
 
