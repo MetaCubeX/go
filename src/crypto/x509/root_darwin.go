@@ -73,13 +73,12 @@ func (c *Certificate) systemVerify(opts *VerifyOptions) (chains [][]*Certificate
 	}
 
 	chain := [][]*Certificate{{}}
-	chainRef, err := macos.SecTrustCopyCertificateChain(trustObj)
-	if err != nil {
-		return nil, err
-	}
-	defer macos.CFRelease(chainRef)
-	for i := 0; i < macos.CFArrayGetCount(chainRef); i++ {
-		certRef := macos.CFArrayGetValueAtIndex(chainRef, i)
+	numCerts := macos.SecTrustGetCertificateCount(trustObj)
+	for i := 0; i < numCerts; i++ {
+		certRef, err := macos.SecTrustGetCertificateAtIndex(trustObj, i)
+		if err != nil {
+			return nil, err
+		}
 		cert, err := exportCertificate(certRef)
 		if err != nil {
 			return nil, err
