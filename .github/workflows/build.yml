@@ -1,0 +1,165 @@
+name: Build
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    strategy:
+      matrix:
+        goos:
+          - windows
+          - darwin
+          - linux
+        goarch:
+          - amd64
+          - arm64
+        version:
+          - { name: '1.20', tag: '1.20.14'}
+          - { name: '1.21', tag: '1.21.13'}
+          - { name: '1.22', tag: '1.22.12'}
+          - { name: '1.23', tag: '1.23.12'}
+          - { name: '1.24', tag: '1.24.13'}
+          - { name: '1.25', tag: '1.25.8'}
+          - { name: '1.26', tag: '1.26.1'}
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/checkout@v6
+        with:
+          repository: golang/go
+          ref: go${{ matrix.version.tag }}
+          path: go
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: "go/src/go.mod"
+          cache: false
+
+      - name: Apply patch
+        if: ${{ matrix.version.name != '1.20' }}
+        run: |
+          cd go
+          patch --verbose -p 1 < $GITHUB_WORKSPACE/go${{matrix.version.name}}.patch
+
+      - name: Set execute permissions
+        run: |
+          chmod +x go/src/make.bash
+
+      - name: Build Go toolchain
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: 0
+        run: |
+          cd go/src
+          ./make.bash
+
+      - name: Create release directory
+        run: |
+          mkdir -p release
+          cp -r go release/
+          cd release/go
+
+          # Remove development files
+          rm -rf .git*
+          
+          rm -rf pkg/*_*
+          mv pkg/tool/${{ matrix.goos }}_${{ matrix.goarch }} pkg
+          rm -rf pkg/tool/*_*
+          mv -f bin/${{ matrix.goos }}_${{ matrix.goarch }}/* bin/ || true
+          rm -rf bin/${{ matrix.goos }}_${{ matrix.goarch }}
+          mv pkg/${{ matrix.goos }}_${{ matrix.goarch }} pkg/tool
+          
+          # Process binaries
+          cd bin
+          if [ "${{ matrix.goos }}" == "windows" ]; then
+            rm -f go gofmt
+          fi
+
+      - name: Package
+        run: |
+          mkdir -p artifact
+          cd release
+          if [[ "${{ matrix.goos }}" == windows ]]; then
+            zip -r ../artifact/go${{ matrix.version.name }}.${{ matrix.goos }}-${{ matrix.goarch }}.zip .
+          else
+            tar -czf ../artifact/go${{ matrix.version.name }}.${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz .
+          fi
+
+      - name: Update Artifact
+        uses: actions/upload-artifact@v7
+        with:
+          path: artifact/*
+          archive: false
+
+  merge:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v8
+        with:
+          path: bin
+          pattern: go*
+          merge-multiple: true
+          skip-decompress: true
+
+      - name: Add patch files
+        run: |
+          cp go*.patch bin/
+
+      - name: Upload Release
+        uses: softprops/action-gh-release@v2
+        if: ${{ success() }}
+        with:
+          tag_name: build
+          files: bin/*
+
+  verify:
+    runs-on: ${{ matrix.os }}
+    needs: merge
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        go-version: [ '1.26', '1.25', '1.24', '1.23', '1.22', '1.21', '1.20' ]
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Go
+        uses: actions/setup-go@master
+        with:
+          go-download-base-url: 'https://github.com/${{ github.repository }}/releases/download/build'
+          go-version: ${{ matrix.go-version }}
+          cache: false
+
+      - name: Verify Go installation
+        run: go version
+
+      - name: Verify Go env
+        run: go env
+
+      - name: Verify Go is functional
+        shell: bash
+        run: |
+          # Create a simple Go program and run it
+          mkdir -p /tmp/test-go && cd /tmp/test-go
+          cat > main.go << 'EOF'
+          package main
+          import "fmt"
+          func main() {
+            fmt.Println("Hello World!")
+          }
+          EOF
+          go run main.go

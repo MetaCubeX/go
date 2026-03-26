@@ -1,5 +1,14 @@
 # MeteCubeX forked Go
 
+using in github action
+```yaml
+  - name: Set up Go
+    uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c
+    with:
+      go-download-base-url: 'https://github.com/MetaCubeX/go/releases/download/build'
+      go-version: ${{ matrix.go-version }}
+```
+
 ## Revert Golang1.26 commit for Windows7/8
 this patch file only works on golang1.26.x
 
