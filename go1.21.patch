@@ -1,9 +1,6 @@
 Subject: [PATCH] Revert "[release-branch.go1.21] crypto/rand,runtime: switch RtlGenRandom for ProcessPrng"
 ---
 Index: src/crypto/rand/rand.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/crypto/rand/rand.go b/src/crypto/rand/rand.go
 --- a/src/crypto/rand/rand.go	(revision 8bba868de983dd7bf55fcd121495ba8d6e2734e7)
@@ -18,17 +15,14 @@ diff --git a/src/crypto/rand/rand.go b/src/crypto/rand/rand.go
  // On WASIP1/Wasm, Reader uses random_get from wasi_snapshot_preview1.
  var Reader io.Reader
 Index: src/crypto/rand/rand_windows.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/crypto/rand/rand_windows.go b/src/crypto/rand/rand_windows.go
 --- a/src/crypto/rand/rand_windows.go	(revision 8bba868de983dd7bf55fcd121495ba8d6e2734e7)
 +++ b/src/crypto/rand/rand_windows.go	(revision 7e6c963d81e14ee394402671d4044b2940c8d2c1)
 @@ -15,8 +15,11 @@
- 
+
  type rngReader struct{}
- 
+
 -func (r *rngReader) Read(b []byte) (int, error) {
 -	if err := windows.ProcessPrng(b); err != nil {
 +func (r *rngReader) Read(b []byte) (n int, err error) {
@@ -40,9 +34,6 @@ diff --git a/src/crypto/rand/rand_windows.go b/src/crypto/rand/rand_windows.go
  	}
  	return len(b), nil
 Index: src/internal/syscall/windows/syscall_windows.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/internal/syscall/windows/syscall_windows.go b/src/internal/syscall/windows/syscall_windows.go
 --- a/src/internal/syscall/windows/syscall_windows.go	(revision 8bba868de983dd7bf55fcd121495ba8d6e2734e7)
@@ -50,23 +41,20 @@ diff --git a/src/internal/syscall/windows/syscall_windows.go b/src/internal/sysc
 @@ -384,7 +384,7 @@
  //sys	DestroyEnvironmentBlock(block *uint16) (err error) = userenv.DestroyEnvironmentBlock
  //sys	CreateEvent(eventAttrs *SecurityAttributes, manualReset uint32, initialState uint32, name *uint16) (handle syscall.Handle, err error) = kernel32.CreateEventW
- 
+
 -//sys	ProcessPrng(buf []byte) (err error) = bcryptprimitives.ProcessPrng
 +//sys	RtlGenRandom(buf []byte) (err error) = advapi32.SystemFunction036
- 
+
  //sys	RtlLookupFunctionEntry(pc uintptr, baseAddress *uintptr, table *byte) (ret uintptr) = kernel32.RtlLookupFunctionEntry
  //sys	RtlVirtualUnwind(handlerType uint32, baseAddress uintptr, pc uintptr, entry uintptr, ctxt uintptr, data *uintptr, frame *uintptr, ctxptrs *byte) (ret uintptr) = kernel32.RtlVirtualUnwind
 Index: src/internal/syscall/windows/zsyscall_windows.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/internal/syscall/windows/zsyscall_windows.go b/src/internal/syscall/windows/zsyscall_windows.go
 --- a/src/internal/syscall/windows/zsyscall_windows.go	(revision 8bba868de983dd7bf55fcd121495ba8d6e2734e7)
 +++ b/src/internal/syscall/windows/zsyscall_windows.go	(revision 7e6c963d81e14ee394402671d4044b2940c8d2c1)
 @@ -37,14 +37,13 @@
  }
- 
+
  var (
 -	modadvapi32         = syscall.NewLazyDLL(sysdll.Add("advapi32.dll"))
 -	modbcryptprimitives = syscall.NewLazyDLL(sysdll.Add("bcryptprimitives.dll"))
@@ -83,7 +71,7 @@ diff --git a/src/internal/syscall/windows/zsyscall_windows.go b/src/internal/sys
 +	modpsapi    = syscall.NewLazyDLL(sysdll.Add("psapi.dll"))
 +	moduserenv  = syscall.NewLazyDLL(sysdll.Add("userenv.dll"))
 +	modws2_32   = syscall.NewLazyDLL(sysdll.Add("ws2_32.dll"))
- 
+
  	procAdjustTokenPrivileges        = modadvapi32.NewProc("AdjustTokenPrivileges")
  	procDuplicateTokenEx             = modadvapi32.NewProc("DuplicateTokenEx")
 @@ -53,7 +52,7 @@
@@ -98,7 +86,7 @@ diff --git a/src/internal/syscall/windows/zsyscall_windows.go b/src/internal/sys
 @@ -149,12 +148,12 @@
  	return
  }
- 
+
 -func ProcessPrng(buf []byte) (err error) {
 +func RtlGenRandom(buf []byte) (err error) {
  	var _p0 *byte
@@ -111,9 +99,6 @@ diff --git a/src/internal/syscall/windows/zsyscall_windows.go b/src/internal/sys
  		err = errnoErr(e1)
  	}
 Index: src/runtime/os_windows.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/runtime/os_windows.go b/src/runtime/os_windows.go
 --- a/src/runtime/os_windows.go	(revision 8bba868de983dd7bf55fcd121495ba8d6e2734e7)
