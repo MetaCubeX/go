@@ -35,6 +35,25 @@ curl https://github.com/MetaCubeX/go/commit/4ea1045cf3124221f055dbd2f3d2c9822934
 curl https://github.com/MetaCubeX/go/commit/8149d992682ce76c6af804b507878e19fc966f7b.diff | patch --verbose -p 1
 ```
 
+## Revert Golang1.26 commit for macOS
+this patch file only works on golang1.26.x
+
+that means after golang1.27 release it must be changed
+
+see: https://github.com/MetaCubeX/go/commits/release-branch.go1.26/
+
+revert:
+* 937368f84e545db15d3f39c2b33a267ba8ead4a4: "crypto/x509: change how we retrieve chains on darwin"
+* 33d3f603c19f46e6529483230465cd6f420ce23b: "cmd/link/internal/ld: use 12.0.0 OS/SDK versions for macOS linking"
+* d90a57ffe8ad8f3cb0137822a768ae48cf80a09d: "cmd/link/internal/ld: unify OS/SDK versions for macOS linking"
+
+```shell
+cd $(go env GOROOT)
+curl https://github.com/MetaCubeX/go/commit/6cdeb5754df609758b37af700faab36f0a415c24.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/976d8529fcedabebae5b83e27887e2fbabdad7d2.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/2d6eff769459a1922540978fbd06a2beeee492cd.diff | patch --verbose -p 1
+```
+
 
 
 ## Revert Golang1.25 commit for Windows7/8
