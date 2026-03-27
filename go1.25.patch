@@ -1,4 +1,7 @@
-Subject: [PATCH] Revert "os: remove 5ms sleep on Windows in (*Process).Wait"
+Subject: [PATCH] Revert "cmd/link/internal/ld: unify OS/SDK versions for macOS linking"
+Revert "cmd/link/internal/ld: use 12.0.0 OS/SDK versions for macOS linking"
+Revert "crypto/x509: change how we retrieve chains on darwin"
+Revert "os: remove 5ms sleep on Windows in (*Process).Wait"
 Fix os.RemoveAll not working on Windows7
 Revert "runtime: always use LoadLibraryEx to load system libraries"
 Revert "syscall: remove Windows 7 console handle workaround"
@@ -6,16 +9,13 @@ Revert "net: remove sysSocket fallback for Windows 7"
 Revert "crypto/rand,runtime: switch RtlGenRandom for ProcessPrng"
 ---
 Index: src/crypto/internal/sysrand/rand_windows.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/crypto/internal/sysrand/rand_windows.go b/src/crypto/internal/sysrand/rand_windows.go
 --- a/src/crypto/internal/sysrand/rand_windows.go	(revision 439ff996f0ee506fc2eb84b7f11ffc360a6299f2)
 +++ b/src/crypto/internal/sysrand/rand_windows.go	(revision 466f6c7a29bc098b0d4c987b803c779222894a11)
 @@ -7,5 +7,26 @@
  import "internal/syscall/windows"
- 
+
  func read(b []byte) error {
 -	return windows.ProcessPrng(b)
 +	// RtlGenRandom only returns 1<<32-1 bytes at a time. We only read at
@@ -42,9 +42,6 @@ diff --git a/src/crypto/internal/sysrand/rand_windows.go b/src/crypto/internal/s
 +	}
  }
 Index: src/crypto/rand/rand.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/crypto/rand/rand.go b/src/crypto/rand/rand.go
 --- a/src/crypto/rand/rand.go	(revision 439ff996f0ee506fc2eb84b7f11ffc360a6299f2)
@@ -59,9 +56,6 @@ diff --git a/src/crypto/rand/rand.go b/src/crypto/rand/rand.go
  //   - On wasip1/wasm, Reader uses random_get.
  //
 Index: src/internal/syscall/windows/syscall_windows.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/internal/syscall/windows/syscall_windows.go b/src/internal/syscall/windows/syscall_windows.go
 --- a/src/internal/syscall/windows/syscall_windows.go	(revision 439ff996f0ee506fc2eb84b7f11ffc360a6299f2)
@@ -69,22 +63,19 @@ diff --git a/src/internal/syscall/windows/syscall_windows.go b/src/internal/sysc
 @@ -419,7 +419,7 @@
  //sys	DestroyEnvironmentBlock(block *uint16) (err error) = userenv.DestroyEnvironmentBlock
  //sys	CreateEvent(eventAttrs *SecurityAttributes, manualReset uint32, initialState uint32, name *uint16) (handle syscall.Handle, err error) = kernel32.CreateEventW
- 
+
 -//sys	ProcessPrng(buf []byte) (err error) = bcryptprimitives.ProcessPrng
 +//sys	RtlGenRandom(buf []byte) (err error) = advapi32.SystemFunction036
- 
+
  type FILE_ID_BOTH_DIR_INFO struct {
  	NextEntryOffset uint32
 Index: src/internal/syscall/windows/zsyscall_windows.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/internal/syscall/windows/zsyscall_windows.go b/src/internal/syscall/windows/zsyscall_windows.go
 --- a/src/internal/syscall/windows/zsyscall_windows.go	(revision 439ff996f0ee506fc2eb84b7f11ffc360a6299f2)
 +++ b/src/internal/syscall/windows/zsyscall_windows.go	(revision 466f6c7a29bc098b0d4c987b803c779222894a11)
 @@ -38,7 +38,6 @@
- 
+
  var (
  	modadvapi32         = syscall.NewLazyDLL(sysdll.Add("advapi32.dll"))
 -	modbcryptprimitives = syscall.NewLazyDLL(sysdll.Add("bcryptprimitives.dll"))
@@ -103,7 +94,7 @@ diff --git a/src/internal/syscall/windows/zsyscall_windows.go b/src/internal/sys
 @@ -270,12 +269,12 @@
  	return
  }
- 
+
 -func ProcessPrng(buf []byte) (err error) {
 +func RtlGenRandom(buf []byte) (err error) {
  	var _p0 *byte
@@ -116,9 +107,6 @@ diff --git a/src/internal/syscall/windows/zsyscall_windows.go b/src/internal/sys
  		err = errnoErr(e1)
  	}
 Index: src/runtime/os_windows.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/runtime/os_windows.go b/src/runtime/os_windows.go
 --- a/src/runtime/os_windows.go	(revision 439ff996f0ee506fc2eb84b7f11ffc360a6299f2)
@@ -154,7 +142,7 @@ diff --git a/src/runtime/os_windows.go b/src/runtime/os_windows.go
 @@ -127,8 +126,23 @@
  	_WriteFile,
  	_ stdFunction
- 
+
 -	// Use ProcessPrng to generate cryptographically random data.
 -	_ProcessPrng stdFunction
 +	// Following syscalls are only available on some Windows PCs.
@@ -174,13 +162,13 @@ diff --git a/src/runtime/os_windows.go b/src/runtime/os_windows.go
 +	// when building executable as Cgo. So load SystemFunction036
 +	// manually during runtime startup.
 +	_RtlGenRandom stdFunction
- 
+
  	// Load ntdll.dll manually during startup, otherwise Mingw
  	// links wrong printf function to cgo executable (see issue
 @@ -145,13 +159,6 @@
  	_ stdFunction
  )
- 
+
 -var (
 -	bcryptprimitivesdll = [...]uint16{'b', 'c', 'r', 'y', 'p', 't', 'p', 'r', 'i', 'm', 'i', 't', 'i', 'v', 'e', 's', '.', 'd', 'l', 'l', 0}
 -	ntdlldll            = [...]uint16{'n', 't', 'd', 'l', 'l', '.', 'd', 'l', 'l', 0}
@@ -194,7 +182,7 @@ diff --git a/src/runtime/os_windows.go b/src/runtime/os_windows.go
 @@ -244,8 +251,18 @@
  	return unsafe.String(&sysDirectory[0], sysDirectoryLen)
  }
- 
+
 -func windowsLoadSystemLib(name []uint16) uintptr {
 -	return stdcall3(_LoadLibraryExW, uintptr(unsafe.Pointer(&name[0])), 0, _LOAD_LIBRARY_SEARCH_SYSTEM32)
 +//go:linkname syscall_getSystemDirectory syscall.getSystemDirectory
@@ -210,11 +198,11 @@ diff --git a/src/runtime/os_windows.go b/src/runtime/os_windows.go
 +		return stdcall1(_LoadLibraryA, uintptr(unsafe.Pointer(&absName[0])))
 +	}
  }
- 
+
  //go:linkname windows_QueryPerformanceCounter internal/syscall/windows.QueryPerformanceCounter
 @@ -263,13 +280,28 @@
  }
- 
+
  func loadOptionalSyscalls() {
 -	bcryptPrimitives := windowsLoadSystemLib(bcryptprimitivesdll[:])
 -	if bcryptPrimitives == 0 {
@@ -232,7 +220,7 @@ diff --git a/src/runtime/os_windows.go b/src/runtime/os_windows.go
 +	useLoadLibraryEx = (_LoadLibraryExW != nil && _LoadLibraryExA != nil && _AddDllDirectory != nil)
 +
 +	initSysDirectory()
- 
+
 -	n32 := windowsLoadSystemLib(ntdlldll[:])
 +	var advapi32dll = []byte("advapi32.dll\000")
 +	a32 := windowsLoadSystemLib(advapi32dll)
@@ -249,7 +237,7 @@ diff --git a/src/runtime/os_windows.go b/src/runtime/os_windows.go
 @@ -298,7 +330,7 @@
  		context  uintptr
  	}
- 
+
 -	powrprof := windowsLoadSystemLib(powrprofdll[:])
 +	powrprof := windowsLoadSystemLib([]byte("powrprof.dll\000"))
  	if powrprof == 0 {
@@ -258,7 +246,7 @@ diff --git a/src/runtime/os_windows.go b/src/runtime/os_windows.go
 @@ -357,6 +389,22 @@
  // in sys_windows_386.s and sys_windows_amd64.s:
  func getlasterror() uint32
- 
+
 +// When loading DLLs, we prefer to use LoadLibraryEx with
 +// LOAD_LIBRARY_SEARCH_* flags, if available. LoadLibraryEx is not
 +// available on old Windows, though, and the LOAD_LIBRARY_SEARCH_*
@@ -276,7 +264,7 @@ diff --git a/src/runtime/os_windows.go b/src/runtime/os_windows.go
 +var useLoadLibraryEx bool
 +
  var timeBeginPeriodRetValue uint32
- 
+
  // osRelaxMinNS indicates that sysmon shouldn't osRelax if the next
 @@ -430,7 +478,8 @@
  		// Only load winmm.dll if we need it.
@@ -291,7 +279,7 @@ diff --git a/src/runtime/os_windows.go b/src/runtime/os_windows.go
 @@ -471,6 +520,28 @@
  	canUseLongPaths = true
  }
- 
+
 +var osVersionInfo struct {
 +	majorVersion uint32
 +	minorVersion uint32
@@ -316,17 +304,17 @@ diff --git a/src/runtime/os_windows.go b/src/runtime/os_windows.go
 +
  func osinit() {
  	asmstdcallAddr = unsafe.Pointer(abi.FuncPCABI0(asmstdcall))
- 
+
 @@ -483,8 +554,8 @@
  	initHighResTimer()
  	timeBeginPeriodRetValue = osRelax(false)
- 
+
 -	initSysDirectory()
  	initLongPathSupport()
 +	initOsVersionInfo()
- 
+
  	numCPUStartup = getCPUCount()
- 
+
 @@ -500,7 +571,7 @@
  //go:nosplit
  func readRandom(r []byte) int {
@@ -337,25 +325,19 @@ diff --git a/src/runtime/os_windows.go b/src/runtime/os_windows.go
  	}
  	return n
 Index: src/net/hook_windows.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/net/hook_windows.go b/src/net/hook_windows.go
 --- a/src/net/hook_windows.go	(revision 466f6c7a29bc098b0d4c987b803c779222894a11)
 +++ b/src/net/hook_windows.go	(revision 1bdabae205052afe1dadb2ad6f1ba612cdbc532a)
 @@ -13,6 +13,7 @@
  	hostsFilePath = windows.GetSystemDirectory() + "/Drivers/etc/hosts"
- 
+
  	// Placeholders for socket system calls.
 +	socketFunc    func(int, int, int) (syscall.Handle, error)                                                 = syscall.Socket
  	wsaSocketFunc func(int32, int32, int32, *syscall.WSAProtocolInfo, uint32, uint32) (syscall.Handle, error) = windows.WSASocket
  	connectFunc   func(syscall.Handle, syscall.Sockaddr) error                                                = syscall.Connect
  	listenFunc    func(syscall.Handle, int) error                                                             = syscall.Listen
 Index: src/net/internal/socktest/main_test.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/net/internal/socktest/main_test.go b/src/net/internal/socktest/main_test.go
 --- a/src/net/internal/socktest/main_test.go	(revision 466f6c7a29bc098b0d4c987b803c779222894a11)
@@ -363,16 +345,13 @@ diff --git a/src/net/internal/socktest/main_test.go b/src/net/internal/socktest/
 @@ -2,7 +2,7 @@
  // Use of this source code is governed by a BSD-style
  // license that can be found in the LICENSE file.
- 
+
 -//go:build !js && !plan9 && !wasip1 && !windows
 +//go:build !js && !plan9 && !wasip1
- 
+
  package socktest_test
- 
+
 Index: src/net/internal/socktest/main_windows_test.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/net/internal/socktest/main_windows_test.go b/src/net/internal/socktest/main_windows_test.go
 new file mode 100644
@@ -402,9 +381,6 @@ new file mode 100644
 +	closeFunc = syscall.Closesocket
 +}
 Index: src/net/internal/socktest/sys_windows.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/net/internal/socktest/sys_windows.go b/src/net/internal/socktest/sys_windows.go
 --- a/src/net/internal/socktest/sys_windows.go	(revision 466f6c7a29bc098b0d4c987b803c779222894a11)
@@ -412,7 +388,7 @@ diff --git a/src/net/internal/socktest/sys_windows.go b/src/net/internal/socktes
 @@ -9,6 +9,38 @@
  	"syscall"
  )
- 
+
 +// Socket wraps [syscall.Socket].
 +func (sw *Switch) Socket(family, sotype, proto int) (s syscall.Handle, err error) {
 +	sw.once.Do(sw.init)
@@ -449,15 +425,12 @@ diff --git a/src/net/internal/socktest/sys_windows.go b/src/net/internal/socktes
  func (sw *Switch) WSASocket(family, sotype, proto int32, protinfo *syscall.WSAProtocolInfo, group uint32, flags uint32) (s syscall.Handle, err error) {
  	sw.once.Do(sw.init)
 Index: src/net/main_windows_test.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/net/main_windows_test.go b/src/net/main_windows_test.go
 --- a/src/net/main_windows_test.go	(revision 466f6c7a29bc098b0d4c987b803c779222894a11)
 +++ b/src/net/main_windows_test.go	(revision 1bdabae205052afe1dadb2ad6f1ba612cdbc532a)
 @@ -12,6 +12,7 @@
- 
+
  var (
  	// Placeholders for saving original socket system calls.
 +	origSocket      = socketFunc
@@ -466,7 +439,7 @@ diff --git a/src/net/main_windows_test.go b/src/net/main_windows_test.go
  	origConnect     = connectFunc
 @@ -21,6 +22,7 @@
  )
- 
+
  func installTestHooks() {
 +	socketFunc = sw.Socket
  	wsaSocketFunc = sw.WSASocket
@@ -474,16 +447,13 @@ diff --git a/src/net/main_windows_test.go b/src/net/main_windows_test.go
  	connectFunc = sw.Connect
 @@ -30,6 +32,7 @@
  }
- 
+
  func uninstallTestHooks() {
 +	socketFunc = origSocket
  	wsaSocketFunc = origWSASocket
  	poll.CloseFunc = origClosesocket
  	connectFunc = origConnect
 Index: src/net/sock_windows.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/net/sock_windows.go b/src/net/sock_windows.go
 --- a/src/net/sock_windows.go	(revision 466f6c7a29bc098b0d4c987b803c779222894a11)
@@ -511,9 +481,6 @@ diff --git a/src/net/sock_windows.go b/src/net/sock_windows.go
  		return syscall.InvalidHandle, os.NewSyscallError("socket", err)
  	}
 Index: src/syscall/exec_windows.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/syscall/exec_windows.go b/src/syscall/exec_windows.go
 --- a/src/syscall/exec_windows.go	(revision 466f6c7a29bc098b0d4c987b803c779222894a11)
@@ -521,15 +488,15 @@ diff --git a/src/syscall/exec_windows.go b/src/syscall/exec_windows.go
 @@ -14,7 +14,6 @@
  	"unsafe"
  )
- 
+
 -// ForkLock is not used on Windows.
  var ForkLock sync.RWMutex
- 
+
  // EscapeArg rewrites command line argument s as prescribed
 @@ -254,6 +253,9 @@
  var zeroProcAttr ProcAttr
  var zeroSysProcAttr SysProcAttr
- 
+
 +//go:linkname rtlGetNtVersionNumbers
 +func rtlGetNtVersionNumbers(majorVersion *uint32, minorVersion *uint32, buildNumber *uint32)
 +
@@ -539,7 +506,7 @@ diff --git a/src/syscall/exec_windows.go b/src/syscall/exec_windows.go
 @@ -317,6 +319,17 @@
  		}
  	}
- 
+
 +	var maj, min, build uint32
 +	rtlGetNtVersionNumbers(&maj, &min, &build)
 +	isWin7 := maj < 6 || (maj == 6 && min <= 1)
@@ -572,9 +539,9 @@ diff --git a/src/syscall/exec_windows.go b/src/syscall/exec_windows.go
  				return 0, 0, err
  			}
 @@ -356,6 +377,14 @@
- 
+
  	fd = append(fd, sys.AdditionalInheritedHandles...)
- 
+
 +	// On Windows 7, console handles aren't real handles, so don't pass them
 +	// through to PROC_THREAD_ATTRIBUTE_HANDLE_LIST.
 +	for i := range fd {
@@ -587,17 +554,14 @@ diff --git a/src/syscall/exec_windows.go b/src/syscall/exec_windows.go
  	// to treat the entire list as empty, so remove NULL handles.
  	j := 0
 Index: src/runtime/syscall_windows.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/runtime/syscall_windows.go b/src/runtime/syscall_windows.go
 --- a/src/runtime/syscall_windows.go	(revision a90777dcf692dd2168577853ba743b4338721b06)
 +++ b/src/runtime/syscall_windows.go	(revision f6bddda4e8ff58a957462a1a09562924d5f3d05c)
 @@ -413,10 +413,20 @@
- 
+
  const _LOAD_LIBRARY_SEARCH_SYSTEM32 = 0x00000800
- 
+
 +// When available, this function will use LoadLibraryEx with the filename
 +// parameter and the important SEARCH_SYSTEM32 argument. But on systems that
 +// do not have that option, absoluteFilepath should contain a fallback
@@ -618,9 +582,6 @@ diff --git a/src/runtime/syscall_windows.go b/src/runtime/syscall_windows.go
  		err = 0
  	}
 Index: src/syscall/dll_windows.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/syscall/dll_windows.go b/src/syscall/dll_windows.go
 --- a/src/syscall/dll_windows.go	(revision a90777dcf692dd2168577853ba743b4338721b06)
@@ -632,12 +593,12 @@ diff --git a/src/syscall/dll_windows.go b/src/syscall/dll_windows.go
 -func loadsystemlibrary(filename *uint16) (handle uintptr, err Errno)
 +func loadsystemlibrary(filename *uint16, absoluteFilepath *uint16) (handle uintptr, err Errno)
  func getprocaddress(handle uintptr, procname *uint8) (proc uintptr, err Errno)
- 
+
  // A DLL implements access to a single DLL.
 @@ -54,6 +54,9 @@
  	Handle Handle
  }
- 
+
 +//go:linkname getSystemDirectory
 +func getSystemDirectory() string // Implemented in runtime package.
 +
@@ -658,9 +619,6 @@ diff --git a/src/syscall/dll_windows.go b/src/syscall/dll_windows.go
  		h, e = loadlibrary(namep)
  	}
 Index: src/os/removeall_at.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/os/removeall_at.go b/src/os/removeall_at.go
 --- a/src/os/removeall_at.go	(revision f6bddda4e8ff58a957462a1a09562924d5f3d05c)
@@ -668,12 +626,12 @@ diff --git a/src/os/removeall_at.go b/src/os/removeall_at.go
 @@ -2,7 +2,7 @@
  // Use of this source code is governed by a BSD-style
  // license that can be found in the LICENSE file.
- 
+
 -//go:build unix || wasip1 || windows
 +//go:build unix || wasip1
- 
+
  package os
- 
+
 @@ -175,3 +175,25 @@
  	}
  	return newDirFile(fd, name)
@@ -701,9 +659,6 @@ diff --git a/src/os/removeall_at.go b/src/os/removeall_at.go
 +	return err
 +}
 Index: src/os/removeall_noat.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/os/removeall_noat.go b/src/os/removeall_noat.go
 --- a/src/os/removeall_noat.go	(revision f6bddda4e8ff58a957462a1a09562924d5f3d05c)
@@ -711,12 +666,12 @@ diff --git a/src/os/removeall_noat.go b/src/os/removeall_noat.go
 @@ -2,7 +2,7 @@
  // Use of this source code is governed by a BSD-style
  // license that can be found in the LICENSE file.
- 
+
 -//go:build (js && wasm) || plan9
 +//go:build (js && wasm) || plan9 || windows
- 
+
  package os
- 
+
 @@ -140,3 +140,22 @@
  	}
  	return err
@@ -741,9 +696,6 @@ diff --git a/src/os/removeall_noat.go b/src/os/removeall_noat.go
 +	return nil
 +}
 Index: src/os/root_noopenat.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/os/root_noopenat.go b/src/os/root_noopenat.go
 --- a/src/os/root_noopenat.go	(revision f6bddda4e8ff58a957462a1a09562924d5f3d05c)
@@ -755,7 +707,7 @@ diff --git a/src/os/root_noopenat.go b/src/os/root_noopenat.go
 -	"syscall"
  	"time"
  )
- 
+
 @@ -185,25 +184,6 @@
  	}
  	return nil
@@ -779,13 +731,10 @@ diff --git a/src/os/root_noopenat.go b/src/os/root_noopenat.go
 -	}
 -	return nil
 -}
- 
+
  func rootReadlink(r *Root, name string) (string, error) {
  	if err := checkPathEscapesLstat(r, name); err != nil {
 Index: src/os/root_openat.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/os/root_openat.go b/src/os/root_openat.go
 --- a/src/os/root_openat.go	(revision f6bddda4e8ff58a957462a1a09562924d5f3d05c)
@@ -793,7 +742,7 @@ diff --git a/src/os/root_openat.go b/src/os/root_openat.go
 @@ -196,28 +196,6 @@
  	return nil
  }
- 
+
 -func rootRemoveAll(r *Root, name string) error {
 -	// Consistency with os.RemoveAll: Strip trailing /s from the name,
 -	// so RemoveAll("not_a_directory/") succeeds.
@@ -820,9 +769,6 @@ diff --git a/src/os/root_openat.go b/src/os/root_openat.go
  	_, err := doInRoot(r, oldname, nil, func(oldparent sysfdType, oldname string) (struct{}, error) {
  		_, err := doInRoot(r, newname, nil, func(newparent sysfdType, newname string) (struct{}, error) {
 Index: src/os/root_windows.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/os/root_windows.go b/src/os/root_windows.go
 --- a/src/os/root_windows.go	(revision f6bddda4e8ff58a957462a1a09562924d5f3d05c)
@@ -843,9 +789,6 @@ diff --git a/src/os/root_windows.go b/src/os/root_windows.go
 +	return checkPathEscapes(r, name)
 +}
 Index: src/os/exec_windows.go
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
 ===================================================================
 diff --git a/src/os/exec_windows.go b/src/os/exec_windows.go
 --- a/src/os/exec_windows.go	(revision bed309eff415bcb3c77dd4bc3277b682b89a388d)
@@ -856,12 +799,12 @@ diff --git a/src/os/exec_windows.go b/src/os/exec_windows.go
  	"time"
 +	_ "unsafe"
  )
- 
+
  // Note that Process.handle is never nil because Windows always requires
 @@ -49,9 +50,23 @@
  	// than statusDone.
  	p.doRelease(statusReleased)
- 
+
 +	var maj, min, build uint32
 +	rtlGetNtVersionNumbers(&maj, &min, &build)
 +	if maj < 10 {
@@ -875,10 +818,141 @@ diff --git a/src/os/exec_windows.go b/src/os/exec_windows.go
 +
  	return &ProcessState{p.Pid, syscall.WaitStatus{ExitCode: ec}, &u}, nil
  }
- 
+
 +//go:linkname rtlGetNtVersionNumbers syscall.rtlGetNtVersionNumbers
 +func rtlGetNtVersionNumbers(majorVersion *uint32, minorVersion *uint32, buildNumber *uint32)
 +
  func (p *Process) signal(sig Signal) error {
  	handle, status := p.handleTransientAcquire()
  	switch status {
+Index: src/crypto/x509/internal/macos/security.go
+===================================================================
+diff --git a/src/crypto/x509/internal/macos/security.go b/src/crypto/x509/internal/macos/security.go
+--- a/src/crypto/x509/internal/macos/security.go	(revision 34b899c2fb39b092db4fa67c4417e41dc046be4b)
++++ b/src/crypto/x509/internal/macos/security.go	(revision f7058fe1ec5898f56434e75bb2c53e1d7735281a)
+@@ -122,6 +122,25 @@
+ }
+ func x509_SecTrustEvaluateWithError_trampoline()
+
++//go:cgo_import_dynamic x509_SecTrustGetCertificateCount SecTrustGetCertificateCount "/System/Library/Frameworks/Security.framework/Versions/A/Security"
++
++func SecTrustGetCertificateCount(trustObj CFRef) int {
++	ret := syscall(abi.FuncPCABI0(x509_SecTrustGetCertificateCount_trampoline), uintptr(trustObj), 0, 0, 0, 0, 0)
++	return int(ret)
++}
++func x509_SecTrustGetCertificateCount_trampoline()
++
++//go:cgo_import_dynamic x509_SecTrustGetCertificateAtIndex SecTrustGetCertificateAtIndex "/System/Library/Frameworks/Security.framework/Versions/A/Security"
++
++func SecTrustGetCertificateAtIndex(trustObj CFRef, i int) (CFRef, error) {
++	ret := syscall(abi.FuncPCABI0(x509_SecTrustGetCertificateAtIndex_trampoline), uintptr(trustObj), uintptr(i), 0, 0, 0, 0)
++	if ret == 0 {
++		return 0, OSStatus{"SecTrustGetCertificateAtIndex", int32(ret)}
++	}
++	return CFRef(ret), nil
++}
++func x509_SecTrustGetCertificateAtIndex_trampoline()
++
+ //go:cgo_import_dynamic x509_SecCertificateCopyData SecCertificateCopyData "/System/Library/Frameworks/Security.framework/Versions/A/Security"
+
+ func SecCertificateCopyData(cert CFRef) ([]byte, error) {
+@@ -134,14 +153,3 @@
+ 	return b, nil
+ }
+ func x509_SecCertificateCopyData_trampoline()
+-
+-//go:cgo_import_dynamic x509_SecTrustCopyCertificateChain SecTrustCopyCertificateChain "/System/Library/Frameworks/Security.framework/Versions/A/Security"
+-
+-func SecTrustCopyCertificateChain(trustObj CFRef) (CFRef, error) {
+-	ret := syscall(abi.FuncPCABI0(x509_SecTrustCopyCertificateChain_trampoline), uintptr(trustObj), 0, 0, 0, 0, 0)
+-	if ret == 0 {
+-		return 0, OSStatus{"SecTrustCopyCertificateChain", int32(ret)}
+-	}
+-	return CFRef(ret), nil
+-}
+-func x509_SecTrustCopyCertificateChain_trampoline()
+Index: src/crypto/x509/internal/macos/security.s
+===================================================================
+diff --git a/src/crypto/x509/internal/macos/security.s b/src/crypto/x509/internal/macos/security.s
+--- a/src/crypto/x509/internal/macos/security.s	(revision 34b899c2fb39b092db4fa67c4417e41dc046be4b)
++++ b/src/crypto/x509/internal/macos/security.s	(revision f7058fe1ec5898f56434e75bb2c53e1d7735281a)
+@@ -21,7 +21,9 @@
+ 	JMP x509_SecTrustEvaluate(SB)
+ TEXT ·x509_SecTrustEvaluateWithError_trampoline(SB),NOSPLIT,$0-0
+ 	JMP x509_SecTrustEvaluateWithError(SB)
++TEXT ·x509_SecTrustGetCertificateCount_trampoline(SB),NOSPLIT,$0-0
++	JMP x509_SecTrustGetCertificateCount(SB)
++TEXT ·x509_SecTrustGetCertificateAtIndex_trampoline(SB),NOSPLIT,$0-0
++	JMP x509_SecTrustGetCertificateAtIndex(SB)
+ TEXT ·x509_SecCertificateCopyData_trampoline(SB),NOSPLIT,$0-0
+ 	JMP x509_SecCertificateCopyData(SB)
+-TEXT ·x509_SecTrustCopyCertificateChain_trampoline(SB),NOSPLIT,$0-0
+-	JMP x509_SecTrustCopyCertificateChain(SB)
+Index: src/crypto/x509/root_darwin.go
+===================================================================
+diff --git a/src/crypto/x509/root_darwin.go b/src/crypto/x509/root_darwin.go
+--- a/src/crypto/x509/root_darwin.go	(revision 34b899c2fb39b092db4fa67c4417e41dc046be4b)
++++ b/src/crypto/x509/root_darwin.go	(revision f7058fe1ec5898f56434e75bb2c53e1d7735281a)
+@@ -73,13 +73,12 @@
+ 	}
+
+ 	chain := [][]*Certificate{{}}
+-	chainRef, err := macOS.SecTrustCopyCertificateChain(trustObj)
+-	if err != nil {
+-		return nil, err
+-	}
+-	defer macOS.CFRelease(chainRef)
+-	for i := 0; i < macOS.CFArrayGetCount(chainRef); i++ {
+-		certRef := macOS.CFArrayGetValueAtIndex(chainRef, i)
++	numCerts := macOS.SecTrustGetCertificateCount(trustObj)
++	for i := 0; i < numCerts; i++ {
++		certRef, err := macOS.SecTrustGetCertificateAtIndex(trustObj, i)
++		if err != nil {
++			return nil, err
++		}
+ 		cert, err := exportCertificate(certRef)
+ 		if err != nil {
+ 			return nil, err
+Index: src/cmd/link/internal/ld/macho.go
+===================================================================
+diff --git a/src/cmd/link/internal/ld/macho.go b/src/cmd/link/internal/ld/macho.go
+--- a/src/cmd/link/internal/ld/macho.go	(revision f7058fe1ec5898f56434e75bb2c53e1d7735281a)
++++ b/src/cmd/link/internal/ld/macho.go	(revision f852f9a97e6fad6af4a8de3ab9409b532d7dfff9)
+@@ -426,14 +426,14 @@
+ 		if ctxt.LinkMode == LinkInternal && machoPlatform == PLATFORM_MACOS {
+ 			var version uint32
+ 			switch ctxt.Arch.Family {
+-			case sys.ARM64, sys.AMD64:
++			case sys.AMD64:
+ 				// This must be fairly recent for Apple signing (go.dev/issue/30488).
+ 				// Having too old a version here was also implicated in some problems
+ 				// calling into macOS libraries (go.dev/issue/56784).
+-				// CL 460476 noted that in general this can be the most recent supported
+-				// macOS version, but we haven't tested if going higher than Go's oldest
+-				// supported macOS version could cause new problems.
+-				version = 12<<16 | 0<<8 | 0<<0 // 12.0.0
++				// In general this can be the most recent supported macOS version.
++				version = 10<<16 | 13<<8 | 0<<0 // 10.13.0
++			case sys.ARM64:
++				version = 11<<16 | 0<<8 | 0<<0 // 11.0.0
+ 			}
+ 			ml := newMachoLoad(ctxt.Arch, imacho.LC_BUILD_VERSION, 4)
+ 			ml.data[0] = uint32(machoPlatform)
+Index: src/cmd/link/link_test.go
+===================================================================
+diff --git a/src/cmd/link/link_test.go b/src/cmd/link/link_test.go
+--- a/src/cmd/link/link_test.go	(revision f7058fe1ec5898f56434e75bb2c53e1d7735281a)
++++ b/src/cmd/link/link_test.go	(revision f852f9a97e6fad6af4a8de3ab9409b532d7dfff9)
+@@ -396,9 +396,9 @@
+ 	}
+ 	found := false
+ 	checkMin := func(ver uint32) {
+-		major, minor, patch := (ver>>16)&0xff, (ver>>8)&0xff, (ver>>0)&0xff
+-		if major < 12 {
+-			t.Errorf("LC_BUILD_VERSION version %d.%d.%d < 12.0.0", major, minor, patch)
++		major, minor := (ver>>16)&0xff, (ver>>8)&0xff
++		if major != 10 || minor < 9 {
++			t.Errorf("LC_BUILD_VERSION version %d.%d < 10.9", major, minor)
+ 		}
+ 	}
+ 	for _, cmd := range exem.Loads {
