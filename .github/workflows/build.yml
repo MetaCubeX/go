@@ -26,6 +26,7 @@ jobs:
           - { name: '1.24', tag: '1.24.13'}
           - { name: '1.25', tag: '1.25.11'}
           - { name: '1.26', tag: '1.26.4'}
+          - { name: '1.27', tag: '1.27rc1'}
       fail-fast: false
 
     steps:
@@ -38,9 +39,17 @@ jobs:
           path: go
 
       - name: Set up Go
+        if: ${{ matrix.version.name != '1.27' }}
         uses: actions/setup-go@v6
         with:
           go-version-file: "go/src/go.mod"
+          cache: false
+
+      - name: Set up Go
+        if: ${{ matrix.version.name == '1.27' }}
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.26" # 1.27 is not yet supported by the actions/setup-go action
           cache: false
 
       - name: Apply patch
@@ -133,7 +142,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
-        go-version: [ '1.26', '1.25', '1.24', '1.23', '1.22', '1.21', '1.20' ]
+        go-version: [ '1.27', '1.26', '1.25', '1.24', '1.23', '1.22', '1.21', '1.20' ]
     steps:
       - uses: actions/checkout@v6
 
