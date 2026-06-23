@@ -878,7 +878,7 @@ func addbuildinfo(ctxt *Link) {
 		}
 
 		if ctxt.IsDarwin() {
-			buildinfo = uuidFromHash(hash.Sum32([]byte(buildID)))
+			buildinfo = uuidFromGoBuildId(buildID)
 			return
 		}
 
