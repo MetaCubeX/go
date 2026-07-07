@@ -18,8 +18,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/cmd/link/internal/ld/pe.go b/src/cmd/link/internal/ld/pe.go
---- a/src/cmd/link/internal/ld/pe.go	(revision eefb454307250192f45fa3718685e4c0a90e281d)
-+++ b/src/cmd/link/internal/ld/pe.go	(revision d54b831101e315e3ca1a6cab8c86f8c864acc23a)
+--- a/src/cmd/link/internal/ld/pe.go	(revision 075e9d41dc2f4842ae0050a11b7c576bba9284a4)
++++ b/src/cmd/link/internal/ld/pe.go	(revision ba7712d3ed4423e6130de307d10c51b641dcc86d)
 @@ -151,139 +151,9 @@
  	IMAGE_REL_BASED_DIR64   = 10
  )
@@ -213,8 +213,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/runtime/cgo/gcc_libinit_windows.c b/src/runtime/cgo/gcc_libinit_windows.c
---- a/src/runtime/cgo/gcc_libinit_windows.c	(revision eefb454307250192f45fa3718685e4c0a90e281d)
-+++ b/src/runtime/cgo/gcc_libinit_windows.c	(revision d54b831101e315e3ca1a6cab8c86f8c864acc23a)
+--- a/src/runtime/cgo/gcc_libinit_windows.c	(revision 075e9d41dc2f4842ae0050a11b7c576bba9284a4)
++++ b/src/runtime/cgo/gcc_libinit_windows.c	(revision ba7712d3ed4423e6130de307d10c51b641dcc86d)
 @@ -14,29 +14,6 @@
  
  #include "libcgo.h"
@@ -251,8 +251,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/runtime/syscall_windows_test.go b/src/runtime/syscall_windows_test.go
---- a/src/runtime/syscall_windows_test.go	(revision eefb454307250192f45fa3718685e4c0a90e281d)
-+++ b/src/runtime/syscall_windows_test.go	(revision d54b831101e315e3ca1a6cab8c86f8c864acc23a)
+--- a/src/runtime/syscall_windows_test.go	(revision 075e9d41dc2f4842ae0050a11b7c576bba9284a4)
++++ b/src/runtime/syscall_windows_test.go	(revision ba7712d3ed4423e6130de307d10c51b641dcc86d)
 @@ -8,7 +8,6 @@
  	"fmt"
  	"internal/abi"
@@ -288,8 +288,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/crypto/internal/sysrand/rand_windows.go b/src/crypto/internal/sysrand/rand_windows.go
---- a/src/crypto/internal/sysrand/rand_windows.go	(revision d54b831101e315e3ca1a6cab8c86f8c864acc23a)
-+++ b/src/crypto/internal/sysrand/rand_windows.go	(revision 9c5b0de540e119fee598b98b0838bdd5a0821329)
+--- a/src/crypto/internal/sysrand/rand_windows.go	(revision ba7712d3ed4423e6130de307d10c51b641dcc86d)
++++ b/src/crypto/internal/sysrand/rand_windows.go	(revision 24b59d2a00aa2a4c72c8cda7b3466a05129848cb)
 @@ -7,5 +7,26 @@
  import "internal/syscall/windows"
  
@@ -324,8 +324,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/crypto/rand/rand.go b/src/crypto/rand/rand.go
---- a/src/crypto/rand/rand.go	(revision d54b831101e315e3ca1a6cab8c86f8c864acc23a)
-+++ b/src/crypto/rand/rand.go	(revision 9c5b0de540e119fee598b98b0838bdd5a0821329)
+--- a/src/crypto/rand/rand.go	(revision ba7712d3ed4423e6130de307d10c51b641dcc86d)
++++ b/src/crypto/rand/rand.go	(revision 24b59d2a00aa2a4c72c8cda7b3466a05129848cb)
 @@ -25,7 +25,7 @@
  //   - On legacy Linux (< 3.17), Reader opens /dev/urandom on first use.
  //   - On macOS, iOS, and OpenBSD Reader, uses arc4random_buf(3).
@@ -341,8 +341,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/internal/syscall/windows/syscall_windows.go b/src/internal/syscall/windows/syscall_windows.go
---- a/src/internal/syscall/windows/syscall_windows.go	(revision d54b831101e315e3ca1a6cab8c86f8c864acc23a)
-+++ b/src/internal/syscall/windows/syscall_windows.go	(revision 9c5b0de540e119fee598b98b0838bdd5a0821329)
+--- a/src/internal/syscall/windows/syscall_windows.go	(revision ba7712d3ed4423e6130de307d10c51b641dcc86d)
++++ b/src/internal/syscall/windows/syscall_windows.go	(revision 24b59d2a00aa2a4c72c8cda7b3466a05129848cb)
 @@ -421,7 +421,7 @@
  //sys	DestroyEnvironmentBlock(block *uint16) (err error) = userenv.DestroyEnvironmentBlock
  //sys	CreateEvent(eventAttrs *SecurityAttributes, manualReset uint32, initialState uint32, name *uint16) (handle syscall.Handle, err error) = kernel32.CreateEventW
@@ -358,8 +358,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/internal/syscall/windows/zsyscall_windows.go b/src/internal/syscall/windows/zsyscall_windows.go
---- a/src/internal/syscall/windows/zsyscall_windows.go	(revision d54b831101e315e3ca1a6cab8c86f8c864acc23a)
-+++ b/src/internal/syscall/windows/zsyscall_windows.go	(revision 9c5b0de540e119fee598b98b0838bdd5a0821329)
+--- a/src/internal/syscall/windows/zsyscall_windows.go	(revision ba7712d3ed4423e6130de307d10c51b641dcc86d)
++++ b/src/internal/syscall/windows/zsyscall_windows.go	(revision 24b59d2a00aa2a4c72c8cda7b3466a05129848cb)
 @@ -38,7 +38,6 @@
  
  var (
@@ -398,8 +398,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/runtime/os_windows.go b/src/runtime/os_windows.go
---- a/src/runtime/os_windows.go	(revision d54b831101e315e3ca1a6cab8c86f8c864acc23a)
-+++ b/src/runtime/os_windows.go	(revision a46dc0e5ab4f57291e973f83967bdaaf3bb185c9)
+--- a/src/runtime/os_windows.go	(revision ba7712d3ed4423e6130de307d10c51b641dcc86d)
++++ b/src/runtime/os_windows.go	(revision fde7c74632c627d5602e9f5dc206c04939c437d3)
 @@ -41,7 +41,8 @@
  //go:cgo_import_dynamic runtime._GetThreadContext GetThreadContext%2 "kernel32.dll"
  //go:cgo_import_dynamic runtime._IsProcessorFeaturePresent IsProcessorFeaturePresent%1 "kernel32.dll"
@@ -642,8 +642,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/net/hook_windows.go b/src/net/hook_windows.go
---- a/src/net/hook_windows.go	(revision 9c5b0de540e119fee598b98b0838bdd5a0821329)
-+++ b/src/net/hook_windows.go	(revision 94a32bb4bc0c0a088b7c7ffb150f8ce11317ab81)
+--- a/src/net/hook_windows.go	(revision 24b59d2a00aa2a4c72c8cda7b3466a05129848cb)
++++ b/src/net/hook_windows.go	(revision b7ce71751ad4df646323a620a2e3bc666131c572)
 @@ -13,6 +13,7 @@
  	hostsFilePath = windows.GetSystemDirectory() + "/Drivers/etc/hosts"
  
@@ -658,8 +658,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/net/internal/socktest/main_test.go b/src/net/internal/socktest/main_test.go
---- a/src/net/internal/socktest/main_test.go	(revision 9c5b0de540e119fee598b98b0838bdd5a0821329)
-+++ b/src/net/internal/socktest/main_test.go	(revision 94a32bb4bc0c0a088b7c7ffb150f8ce11317ab81)
+--- a/src/net/internal/socktest/main_test.go	(revision 24b59d2a00aa2a4c72c8cda7b3466a05129848cb)
++++ b/src/net/internal/socktest/main_test.go	(revision b7ce71751ad4df646323a620a2e3bc666131c572)
 @@ -2,7 +2,7 @@
  // Use of this source code is governed by a BSD-style
  // license that can be found in the LICENSE file.
@@ -676,8 +676,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 ===================================================================
 diff --git a/src/net/internal/socktest/main_windows_test.go b/src/net/internal/socktest/main_windows_test.go
 new file mode 100644
---- /dev/null	(revision 94a32bb4bc0c0a088b7c7ffb150f8ce11317ab81)
-+++ b/src/net/internal/socktest/main_windows_test.go	(revision 94a32bb4bc0c0a088b7c7ffb150f8ce11317ab81)
+--- /dev/null	(revision b7ce71751ad4df646323a620a2e3bc666131c572)
++++ b/src/net/internal/socktest/main_windows_test.go	(revision b7ce71751ad4df646323a620a2e3bc666131c572)
 @@ -0,0 +1,22 @@
 +// Copyright 2015 The Go Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style
@@ -707,8 +707,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/net/internal/socktest/sys_windows.go b/src/net/internal/socktest/sys_windows.go
---- a/src/net/internal/socktest/sys_windows.go	(revision 9c5b0de540e119fee598b98b0838bdd5a0821329)
-+++ b/src/net/internal/socktest/sys_windows.go	(revision 94a32bb4bc0c0a088b7c7ffb150f8ce11317ab81)
+--- a/src/net/internal/socktest/sys_windows.go	(revision 24b59d2a00aa2a4c72c8cda7b3466a05129848cb)
++++ b/src/net/internal/socktest/sys_windows.go	(revision b7ce71751ad4df646323a620a2e3bc666131c572)
 @@ -9,6 +9,38 @@
  	"syscall"
  )
@@ -754,8 +754,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/net/main_windows_test.go b/src/net/main_windows_test.go
---- a/src/net/main_windows_test.go	(revision 9c5b0de540e119fee598b98b0838bdd5a0821329)
-+++ b/src/net/main_windows_test.go	(revision 94a32bb4bc0c0a088b7c7ffb150f8ce11317ab81)
+--- a/src/net/main_windows_test.go	(revision 24b59d2a00aa2a4c72c8cda7b3466a05129848cb)
++++ b/src/net/main_windows_test.go	(revision b7ce71751ad4df646323a620a2e3bc666131c572)
 @@ -12,6 +12,7 @@
  
  var (
@@ -786,8 +786,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/net/sock_windows.go b/src/net/sock_windows.go
---- a/src/net/sock_windows.go	(revision 9c5b0de540e119fee598b98b0838bdd5a0821329)
-+++ b/src/net/sock_windows.go	(revision 94a32bb4bc0c0a088b7c7ffb150f8ce11317ab81)
+--- a/src/net/sock_windows.go	(revision 24b59d2a00aa2a4c72c8cda7b3466a05129848cb)
++++ b/src/net/sock_windows.go	(revision b7ce71751ad4df646323a620a2e3bc666131c572)
 @@ -20,6 +20,21 @@
  func sysSocket(family, sotype, proto int) (syscall.Handle, error) {
  	s, err := wsaSocketFunc(int32(family), int32(sotype), int32(proto),
@@ -816,8 +816,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/syscall/exec_windows.go b/src/syscall/exec_windows.go
---- a/src/syscall/exec_windows.go	(revision 9c5b0de540e119fee598b98b0838bdd5a0821329)
-+++ b/src/syscall/exec_windows.go	(revision bdff553963aad563fb5f4b7258b00556f09c4d45)
+--- a/src/syscall/exec_windows.go	(revision 24b59d2a00aa2a4c72c8cda7b3466a05129848cb)
++++ b/src/syscall/exec_windows.go	(revision 46abe706ed0790f75983c8649e949f14798f646c)
 @@ -15,7 +15,6 @@
  	"unsafe"
  )
@@ -892,8 +892,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/syscall/dll_windows.go b/src/syscall/dll_windows.go
---- a/src/syscall/dll_windows.go	(revision bdff553963aad563fb5f4b7258b00556f09c4d45)
-+++ b/src/syscall/dll_windows.go	(revision a46dc0e5ab4f57291e973f83967bdaaf3bb185c9)
+--- a/src/syscall/dll_windows.go	(revision 46abe706ed0790f75983c8649e949f14798f646c)
++++ b/src/syscall/dll_windows.go	(revision fde7c74632c627d5602e9f5dc206c04939c437d3)
 @@ -119,14 +119,7 @@
  }
  
@@ -939,8 +939,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/os/removeall_at.go b/src/os/removeall_at.go
---- a/src/os/removeall_at.go	(revision a46dc0e5ab4f57291e973f83967bdaaf3bb185c9)
-+++ b/src/os/removeall_at.go	(revision 587250fa13759a0a1f46cb415928b7138d50e3ce)
+--- a/src/os/removeall_at.go	(revision fde7c74632c627d5602e9f5dc206c04939c437d3)
++++ b/src/os/removeall_at.go	(revision 5872888df3a3778217ceb187468d63fa4c1a5be1)
 @@ -2,7 +2,7 @@
  // Use of this source code is governed by a BSD-style
  // license that can be found in the LICENSE file.
@@ -965,7 +965,7 @@ diff --git a/src/os/removeall_at.go b/src/os/removeall_at.go
 +		// Consistency with os.RemoveAll: Return EINVAL when trying to remove .
 +		return &PathError{Op: "RemoveAll", Path: name, Err: syscall.EINVAL}
 +	}
-+	_, err := doInRoot(r, name, nil, func(parent sysfdType, name string) (struct{}, error) {
++	_, err := doInRoot(r, name, 0, nil, func(parent sysfdType, name string, endsInSlash bool) (struct{}, error) {
 +		return struct{}{}, removeAllFrom(parent, name)
 +	})
 +	if IsNotExist(err) {
@@ -982,8 +982,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/os/removeall_noat.go b/src/os/removeall_noat.go
---- a/src/os/removeall_noat.go	(revision a46dc0e5ab4f57291e973f83967bdaaf3bb185c9)
-+++ b/src/os/removeall_noat.go	(revision 587250fa13759a0a1f46cb415928b7138d50e3ce)
+--- a/src/os/removeall_noat.go	(revision fde7c74632c627d5602e9f5dc206c04939c437d3)
++++ b/src/os/removeall_noat.go	(revision 5872888df3a3778217ceb187468d63fa4c1a5be1)
 @@ -2,7 +2,7 @@
  // Use of this source code is governed by a BSD-style
  // license that can be found in the LICENSE file.
@@ -993,12 +993,17 @@ diff --git a/src/os/removeall_noat.go b/src/os/removeall_noat.go
  
  package os
  
-@@ -140,3 +140,22 @@
+@@ -140,3 +140,27 @@
  	}
  	return err
  }
 +
 +func rootRemoveAll(r *Root, name string) error {
++	// Consistency with os.RemoveAll: Strip trailing /s from the name,
++	// so RemoveAll("not_a_directory/") succeeds.
++	for len(name) > 0 && IsPathSeparator(name[len(name)-1]) {
++		name = name[:len(name)-1]
++	}
 +	if endsWithDot(name) {
 +		// Consistency with os.RemoveAll: Return EINVAL when trying to remove .
 +		return &PathError{Op: "RemoveAll", Path: name, Err: syscall.EINVAL}
@@ -1022,8 +1027,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/os/root_noopenat.go b/src/os/root_noopenat.go
---- a/src/os/root_noopenat.go	(revision a46dc0e5ab4f57291e973f83967bdaaf3bb185c9)
-+++ b/src/os/root_noopenat.go	(revision 587250fa13759a0a1f46cb415928b7138d50e3ce)
+--- a/src/os/root_noopenat.go	(revision fde7c74632c627d5602e9f5dc206c04939c437d3)
++++ b/src/os/root_noopenat.go	(revision 5872888df3a3778217ceb187468d63fa4c1a5be1)
 @@ -11,7 +11,6 @@
  	"internal/filepathlite"
  	"internal/stringslite"
@@ -1032,12 +1037,17 @@ diff --git a/src/os/root_noopenat.go b/src/os/root_noopenat.go
  	"time"
  )
  
-@@ -185,25 +184,6 @@
+@@ -185,30 +184,6 @@
  	}
  	return nil
  }
 -
 -func rootRemoveAll(r *Root, name string) error {
+-	// Consistency with os.RemoveAll: Strip trailing /s from the name,
+-	// so RemoveAll("not_a_directory/") succeeds.
+-	for len(name) > 0 && IsPathSeparator(name[len(name)-1]) {
+-		name = name[:len(name)-1]
+-	}
 -	if endsWithDot(name) {
 -		// Consistency with os.RemoveAll: Return EINVAL when trying to remove .
 -		return &PathError{Op: "RemoveAll", Path: name, Err: syscall.EINVAL}
@@ -1064,9 +1074,9 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/os/root_openat.go b/src/os/root_openat.go
---- a/src/os/root_openat.go	(revision a46dc0e5ab4f57291e973f83967bdaaf3bb185c9)
-+++ b/src/os/root_openat.go	(revision 587250fa13759a0a1f46cb415928b7138d50e3ce)
-@@ -196,28 +196,6 @@
+--- a/src/os/root_openat.go	(revision fde7c74632c627d5602e9f5dc206c04939c437d3)
++++ b/src/os/root_openat.go	(revision 5872888df3a3778217ceb187468d63fa4c1a5be1)
+@@ -206,28 +206,6 @@
  	return nil
  }
  
@@ -1080,7 +1090,7 @@ diff --git a/src/os/root_openat.go b/src/os/root_openat.go
 -		// Consistency with os.RemoveAll: Return EINVAL when trying to remove .
 -		return &PathError{Op: "RemoveAll", Path: name, Err: syscall.EINVAL}
 -	}
--	_, err := doInRoot(r, name, nil, func(parent sysfdType, name string) (struct{}, error) {
+-	_, err := doInRoot(r, name, 0, nil, func(parent sysfdType, name string, endsInSlash bool) (struct{}, error) {
 -		return struct{}{}, removeAllFrom(parent, name)
 -	})
 -	if IsNotExist(err) {
@@ -1093,19 +1103,19 @@ diff --git a/src/os/root_openat.go b/src/os/root_openat.go
 -}
 -
  func rootRename(r *Root, oldname, newname string) error {
- 	_, err := doInRoot(r, oldname, nil, func(oldparent sysfdType, oldname string) (struct{}, error) {
- 		_, err := doInRoot(r, newname, nil, func(newparent sysfdType, newname string) (struct{}, error) {
+ 	_, err := doInRoot(r, oldname, 0, nil, func(oldparent sysfdType, oldname string, oldEndsInSlash bool) (struct{}, error) {
+ 		flags := uint(doInRootCreatingDirectory)
 Index: src/os/root_windows.go
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/os/root_windows.go b/src/os/root_windows.go
---- a/src/os/root_windows.go	(revision a46dc0e5ab4f57291e973f83967bdaaf3bb185c9)
-+++ b/src/os/root_windows.go	(revision 587250fa13759a0a1f46cb415928b7138d50e3ce)
-@@ -402,3 +402,14 @@
- 	}
- 	return fi.Mode(), nil
+--- a/src/os/root_windows.go	(revision fde7c74632c627d5602e9f5dc206c04939c437d3)
++++ b/src/os/root_windows.go	(revision 5872888df3a3778217ceb187468d63fa4c1a5be1)
+@@ -432,3 +432,14 @@
+ 	fs, ok := fi.(*fileStat)
+ 	return ok && fs.FileAttributes&syscall.FILE_ATTRIBUTE_DIRECTORY != 0
  }
 +
 +func checkPathEscapes(r *Root, name string) error {
@@ -1124,8 +1134,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/os/exec_windows.go b/src/os/exec_windows.go
---- a/src/os/exec_windows.go	(revision 587250fa13759a0a1f46cb415928b7138d50e3ce)
-+++ b/src/os/exec_windows.go	(revision 9d772b8c59eb1943f6b84e8ad415df8afc6fd974)
+--- a/src/os/exec_windows.go	(revision 5872888df3a3778217ceb187468d63fa4c1a5be1)
++++ b/src/os/exec_windows.go	(revision 725082202159df8cb17196e767500fdc7e8413e2)
 @@ -10,6 +10,7 @@
  	"runtime"
  	"syscall"
@@ -1164,8 +1174,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/crypto/x509/internal/macos/security.go b/src/crypto/x509/internal/macos/security.go
---- a/src/crypto/x509/internal/macos/security.go	(revision 9d772b8c59eb1943f6b84e8ad415df8afc6fd974)
-+++ b/src/crypto/x509/internal/macos/security.go	(revision 6d42b30da884c6c12673582a772339105c8a487d)
+--- a/src/crypto/x509/internal/macos/security.go	(revision 725082202159df8cb17196e767500fdc7e8413e2)
++++ b/src/crypto/x509/internal/macos/security.go	(revision e23e72701be851802dd851d4f14a1c08aa20cb1c)
 @@ -122,6 +122,25 @@
  }
  func x509_SecTrustEvaluateWithError_trampoline()
@@ -1213,8 +1223,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/crypto/x509/internal/macos/security.s b/src/crypto/x509/internal/macos/security.s
---- a/src/crypto/x509/internal/macos/security.s	(revision 9d772b8c59eb1943f6b84e8ad415df8afc6fd974)
-+++ b/src/crypto/x509/internal/macos/security.s	(revision 6d42b30da884c6c12673582a772339105c8a487d)
+--- a/src/crypto/x509/internal/macos/security.s	(revision 725082202159df8cb17196e767500fdc7e8413e2)
++++ b/src/crypto/x509/internal/macos/security.s	(revision e23e72701be851802dd851d4f14a1c08aa20cb1c)
 @@ -21,7 +21,9 @@
  	JMP x509_SecTrustEvaluate(SB)
  TEXT ·x509_SecTrustEvaluateWithError_trampoline(SB),NOSPLIT,$0-0
@@ -1233,8 +1243,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/crypto/x509/root_darwin.go b/src/crypto/x509/root_darwin.go
---- a/src/crypto/x509/root_darwin.go	(revision 9d772b8c59eb1943f6b84e8ad415df8afc6fd974)
-+++ b/src/crypto/x509/root_darwin.go	(revision 6d42b30da884c6c12673582a772339105c8a487d)
+--- a/src/crypto/x509/root_darwin.go	(revision 725082202159df8cb17196e767500fdc7e8413e2)
++++ b/src/crypto/x509/root_darwin.go	(revision e23e72701be851802dd851d4f14a1c08aa20cb1c)
 @@ -76,13 +76,12 @@
  	}
  
@@ -1261,8 +1271,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/cmd/link/internal/ld/macho.go b/src/cmd/link/internal/ld/macho.go
---- a/src/cmd/link/internal/ld/macho.go	(revision 6d42b30da884c6c12673582a772339105c8a487d)
-+++ b/src/cmd/link/internal/ld/macho.go	(revision a173ff1d9c7e158bb3c6bdf0a23c747fc6432427)
+--- a/src/cmd/link/internal/ld/macho.go	(revision e23e72701be851802dd851d4f14a1c08aa20cb1c)
++++ b/src/cmd/link/internal/ld/macho.go	(revision 1a2f0375250ed7313e11823285fb427767ff476d)
 @@ -7,7 +7,6 @@
  import (
  	"bytes"
@@ -1409,8 +1419,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/cmd/link/link_test.go b/src/cmd/link/link_test.go
---- a/src/cmd/link/link_test.go	(revision 6d42b30da884c6c12673582a772339105c8a487d)
-+++ b/src/cmd/link/link_test.go	(revision a173ff1d9c7e158bb3c6bdf0a23c747fc6432427)
+--- a/src/cmd/link/link_test.go	(revision e23e72701be851802dd851d4f14a1c08aa20cb1c)
++++ b/src/cmd/link/link_test.go	(revision 1a2f0375250ed7313e11823285fb427767ff476d)
 @@ -482,9 +482,9 @@
  	}
  	found := false
@@ -1430,8 +1440,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/cmd/link/internal/ld/elf.go b/src/cmd/link/internal/ld/elf.go
---- a/src/cmd/link/internal/ld/elf.go	(revision 8496f1f72e36d00a8ad1486895fd61057764bc25)
-+++ b/src/cmd/link/internal/ld/elf.go	(revision d3a2b5c018ec072df2281cb4f151f96d84c88b65)
+--- a/src/cmd/link/internal/ld/elf.go	(revision 1645b8df70de4347c8e39192307dad589ce9f7b3)
++++ b/src/cmd/link/internal/ld/elf.go	(revision 1ac3673ec2a5c8de1c5a33557cd301eab9ac38ed)
 @@ -878,7 +878,7 @@
  		}
  
@@ -1447,8 +1457,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/cmd/link/internal/ld/macho_update_uuid.go b/src/cmd/link/internal/ld/macho_update_uuid.go
---- a/src/cmd/link/internal/ld/macho_update_uuid.go	(revision 8496f1f72e36d00a8ad1486895fd61057764bc25)
-+++ b/src/cmd/link/internal/ld/macho_update_uuid.go	(revision d3a2b5c018ec072df2281cb4f151f96d84c88b65)
+--- a/src/cmd/link/internal/ld/macho_update_uuid.go	(revision 1645b8df70de4347c8e39192307dad589ce9f7b3)
++++ b/src/cmd/link/internal/ld/macho_update_uuid.go	(revision 1ac3673ec2a5c8de1c5a33557cd301eab9ac38ed)
 @@ -18,6 +18,7 @@
  // final executable generated by the external linker.
  
@@ -1512,8 +1522,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/cmd/link/internal/ld/main.go b/src/cmd/link/internal/ld/main.go
---- a/src/cmd/link/internal/ld/main.go	(revision 8496f1f72e36d00a8ad1486895fd61057764bc25)
-+++ b/src/cmd/link/internal/ld/main.go	(revision d3a2b5c018ec072df2281cb4f151f96d84c88b65)
+--- a/src/cmd/link/internal/ld/main.go	(revision 1645b8df70de4347c8e39192307dad589ce9f7b3)
++++ b/src/cmd/link/internal/ld/main.go	(revision 1ac3673ec2a5c8de1c5a33557cd301eab9ac38ed)
 @@ -55,11 +55,9 @@
  )
  
