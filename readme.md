@@ -27,12 +27,12 @@ sepical fix:
 - os.RemoveAll not working on Windows7
 ```shell
 cd $(go env GOROOT)
-curl https://github.com/MetaCubeX/go/commit/4b29590aa510e05686ea53de16e1e571d22203d8.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/2263b05b2fa6ce228fde1899587baf109f1e2e0a.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/ae41f7abdd5d7b8b51db2c03bf819ac66b8e1eb1.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/ce2e1a3d2c3c0d7277b4102841db1697147d2923.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/4ea1045cf3124221f055dbd2f3d2c9822934f661.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/8149d992682ce76c6af804b507878e19fc966f7b.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/a4ae550aa148b04c9d4890e98bee63aede5c4b53.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/95b851f661584711faa8115b3234a461044f4510.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/b0bf0a863cf218b9bb0d6c013903ab160ae0c39b.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/7c7a2a0d68920f8764d9a3aeae7ad1067a17b3fa.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/ba34356e82f3c12a7303d2231e6ea0e42bbbb3bf.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/472a88edbc2a42feb53fa31d29ab54d33840dca6.diff | patch --verbose -p 1
 ```
 
 ## Revert Golang1.26 commit for macOS
@@ -49,9 +49,9 @@ revert:
 
 ```shell
 cd $(go env GOROOT)
-curl https://github.com/MetaCubeX/go/commit/6cdeb5754df609758b37af700faab36f0a415c24.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/976d8529fcedabebae5b83e27887e2fbabdad7d2.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/2d6eff769459a1922540978fbd06a2beeee492cd.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/70cc7249b8cf65e80163d792643de8bd90ad51a6.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/d8f95fa6d13742a90c1810be7cd4b48cdb9cb061.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/fc11427d8d43eb11947d11bf67781a3d9bfa89e8.diff | patch --verbose -p 1
 ```
 
 
@@ -74,12 +74,12 @@ sepical fix:
 - os.RemoveAll not working on Windows7
 ```shell
 cd $(go env GOROOT)
-curl https://github.com/MetaCubeX/go/commit/466f6c7a29bc098b0d4c987b803c779222894a11.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/1bdabae205052afe1dadb2ad6f1ba612cdbc532a.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/a90777dcf692dd2168577853ba743b4338721b06.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/f6bddda4e8ff58a957462a1a09562924d5f3d05c.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/bed309eff415bcb3c77dd4bc3277b682b89a388d.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/34b899c2fb39b092db4fa67c4417e41dc046be4b.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/da4094da73b3b419e3f347594d805e2831f65667.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/824aa60e77f06dbae86c20a164c78df722eb7047.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/a3b6ba31c8cc67b6d899b978bba7b53e95afc46b.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/edfa8de63435a409a59f60731b66ab5940d6d3a4.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/284f9b24d6284984966a8431e30fdc2583938f96.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/9864798dee8dd47b55d1d5100d2f1b909a2a6e6c.diff | patch --verbose -p 1
 ```
 
 ## Revert Golang1.25 commit for macOS
@@ -96,9 +96,9 @@ revert:
 
 ```shell
 cd $(go env GOROOT)
-curl https://github.com/MetaCubeX/go/commit/f7058fe1ec5898f56434e75bb2c53e1d7735281a.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/f2174047688a295ea6e52c2ab14a8ed19c886b35.diff | patch --verbose -p 1
-curl https://github.com/MetaCubeX/go/commit/f852f9a97e6fad6af4a8de3ab9409b532d7dfff9.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/ce51192417f9775ce401fed559f533b0e534f04d.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/41e016c2b1e146cf0a5a12d436b95d0d0b61e59e.diff | patch --verbose -p 1
+curl https://github.com/MetaCubeX/go/commit/bd25e81d81c109f702b87a4c02a93a2b16ae9b04.diff | patch --verbose -p 1
 ```
 
 ## Revert Golang1.24 commit for Windows7/8
